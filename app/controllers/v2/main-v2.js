@@ -6,11 +6,10 @@ import {
   onFail,
   showDataForm,
 } from "./controllers.js";
+import foodServ from "./service.js";
 let FetchFoodList = () => {
-  axios({
-    url: URL,
-    method: "GET",
-  })
+  foodServ
+    .getList()
     .then((res) => {
       console.log("🚀 ~ file: main-v2.js:9 ~ .then ~ res:", res);
       renderFoodList(res.data);
@@ -24,11 +23,8 @@ FetchFoodList();
 window.addFood = () => {
   let food = laythongtin();
   console.log("🚀 ~ file: main-v2.js:20 ~ food:", food);
-  axios({
-    url: URL,
-    method: "POST",
-    data: food,
-  })
+  foodServ
+    .addFood()
     .then((res) => {
       console.log("🚀 ~ file: main-v2.js:27 ~ .then ~ res:", res);
       $("#exampleModal").modal("hide");
@@ -43,10 +39,8 @@ window.addFood = () => {
 
 window.deleteFood = (id) => {
   console.log("🚀 ~ file: main-v2.js:39 ~ window.deleteFood ~ id:", id);
-  axios({
-    url: `${URL}/${id}`,
-    method: "DELETE",
-  })
+  foodServ
+    .deleteFood(id)
     .then((res) => {
       console.log("🚀 ~ file: main-v2.js:43 ~ .then ~ res:", res);
       onSuccess("Xóa thành công");
@@ -59,10 +53,8 @@ window.deleteFood = (id) => {
 };
 window.editFood = (id) => {
   $("#exampleModal").modal("show");
-  axios({
-    url: `${URL}/${id}`,
-    method: "GET",
-  })
+  foodServ
+    .getDetails(id)
     .then((res) => {
       console.log("🚀 ~ file: main-v2.js:65 ~ .then ~ res:", res);
       showDataForm(res.data);
@@ -75,19 +67,15 @@ window.editFood = (id) => {
 window.updateFood = () => {
   $("#exampleModal").modal("hide");
   let food = laythongtin();
-  axios({
-    url: `${URL}/${food.ma}`,
-    method: "PUT",
-    data: food,
-  })
+  foodServ
+    .getUpdateFood(food)
     .then((res) => {
       console.log("🚀 ~ file: main-v2.js:84 ~ .then ~ res:", res);
       onSuccess("Chỉnh sửa thành công");
-      FetchFoodList()
+      FetchFoodList();
     })
     .catch((err) => {
       onFail("Chỉnh sửa thất bại");
       console.log("🚀 ~ file: main-v2.js:88 ~ err:", err);
-      
     });
 };
